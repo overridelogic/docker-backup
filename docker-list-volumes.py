@@ -8,4 +8,6 @@ volumes = client.volumes.list(filters={
 })
 
 for volume in volumes:
+    if len(volume.name) == 64:
+        continue
     print(volume.name)

@@ -66,7 +66,7 @@ VOLUMES="$(discoverVolumes)"
 COUNT=`echo "${VOLUMES}" | wc -w`
 echo "Found ${COUNT} volumes."
 
-for volume in "${VOLUMES}"; do
+for volume in ${VOLUMES}; do
     createBackup "${volume}"
 done
 
