@@ -9,7 +9,7 @@ _RUN_CMD="python3 ${_DIR}/docker-run-backup.py"
 _ARGS="${VOLUMES:-$*}"
 
 set -x
-WORKDIR="${WORKDIR:-/tmp}"
+WORKDIR="${WORKDIR:-/data}"
 S3_BUCKET="${S3_BUCKET:-}"
 S3_PREFIX="${S3_PREFIX:-/}"
 S3_ENABLETAG="${S3_ENABLETAG:-1}"
