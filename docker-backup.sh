@@ -1,0 +1,71 @@
+#!/bin/bash
+
+set -e
+set -u
+_DIR=`dirname $0`
+_DIR=`realpath ${_DIR}`
+_ARGS=" $* "
+set -x
+
+WORKDIR="${WORKDIR:-/tmp}"
+S3_BUCKET="${S3_BUCKET:-}"
+S3_PREFIX="${S3_PREFIX:-/}"
+S3_ENABLETAG="${S3_ENABLETAG:-1}"
+S3_OPTS="${S3_OPTS:-1}"
+
+_HOST=`hostname -s`
+_TIMESTAMP=`date +'%Y%m%d%H'`
+set +x
+
+discoverVolumes() {
+    DATA=`docker volume ls -f dangling=false -q`
+    VOLUMES=""
+
+    if [ "$_ARGS" == "" ]; then
+        VOLUMES="$DATA"
+    else
+        for volume in "$DATA"; do
+            if [[ " ${_ARGS} " =~ " ${volume} " ]]; then
+                VOLUMES="${VOLUMES} ${volume}"
+            fi
+        done
+    fi
+
+    echo -e $VOLUMES
+}
+
+createBackup() {
+    volume="$1"
+
+    OUTPUT_BASE="${_HOST}_${volume}"
+    OUTPUT_FILE="${OUTPUT_BASE}-${_TIMESTAMP}.tar.gz"
+    OUTPUT_FULL="${WORKDIR}/${OUTPUT_FILE}"
+    
+    echo -n "Creating ${volume}... "
+    docker run --rm -v "${volume}:/data/${volume}" busybox /bin/sh -c \
+        "cd /data && tar -zcf - ${volume}" > "${OUTPUT_FULL}"
+
+    echo -n "created... "
+
+    if [ "${S3_BUCKET}" != "" ]; then
+        echo -n "uploading... "
+        s3cmd put ${S3_OPTS} "${OUTPUT}" "s3://${S3_BUCKET}${S3_PREFIX}"
+
+        if [ $S3_ENABLE_TAG -gt 0 ]; then
+            echo -n "updating tag... "
+            s3cmd cp ${S3_OPTS} "s3://${S3_BUCKET}/${OUTPUT_FILE}" "s3://${S3_BUCKET}/${OUTPUT_BASE}-latest.tar.gz"
+        fi
+    fi
+
+    echo "done."
+}
+
+VOLUMES="$(discoverVolumes)"
+COUNT=`echo "${VOLUMES}" | wc -w`
+echo "Found ${COUNT} volumes."
+
+for volume in "${VOLUMES}"; do
+    createBackup "${volume}"
+done
+
+echo "Finished!"
