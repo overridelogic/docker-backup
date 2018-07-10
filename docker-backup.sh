@@ -4,7 +4,7 @@ set -e
 set -u
 _DIR=`dirname $0`
 _DIR=`realpath ${_DIR}`
-_ARGS=" $* "
+_ARGS="${VOLUMES:-$*}"
 set -x
 
 WORKDIR="${WORKDIR:-/tmp}"
@@ -57,7 +57,8 @@ createBackup() {
         fi
     fi
 
-    echo "done."
+    SIZE=`du -h ${OUTPUT_FULL} | cut -f1`
+    echo "done: ${SIZE}, ${OUTPUT_FILE}"
 }
 
 VOLUMES="$(discoverVolumes)"
