@@ -11,6 +11,7 @@ To run the backup process:
     docker run --rm \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v <output-dir>:/data \
+        -e PREFIX="my-container_" \                         # optional
         overridelogic/docker-backup
 
 This will back up all used volumes to the **output-dir** directory.

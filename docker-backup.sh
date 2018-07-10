@@ -9,15 +9,14 @@ _RUN_CMD="python3 ${_DIR}/docker-run-backup.py"
 _ARGS="${VOLUMES:-$*}"
 
 set -x
+_TIMESTAMP=`date +'%Y%m%d%H%M'`
 WORKDIR="${WORKDIR:-/data}"
+PREFIX="${PREFIX:-volume_}"
 S3_BUCKET="${S3_BUCKET:-}"
 S3_PREFIX="${S3_PREFIX:-/}"
 S3_ENABLELATEST="${S3_ENABLELATEST:-1}"
-S3_OPTS="${S3_OPTS:-}"
-
-_HOST=`hostname -s`
-_TIMESTAMP=`date +'%Y%m%d%H%M'`
 set +x
+S3_OPTS="${S3_OPTS:-}"
 
 discoverVolumes() {
     DATA=`$_LIST_CMD`
@@ -39,7 +38,7 @@ discoverVolumes() {
 createBackup() {
     volume="$1"
 
-    OUTPUT_BASE="${_HOST}_${volume}"
+    OUTPUT_BASE="${PREFIX}_${volume}"
     OUTPUT_FILE="${OUTPUT_BASE}-${_TIMESTAMP}.tar.gz"
     OUTPUT_FULL="${WORKDIR}/${OUTPUT_FILE}"
     
