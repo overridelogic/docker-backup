@@ -1,12 +1,19 @@
-#!/bin/bash
+#!/bin/sh
 
 set -e
 set -u
 _DIR=`dirname $0`
 _DIR=`realpath ${_DIR}`
 _ARGS="${VOLUMES:-$*}"
-set -x
 
+if [ -x "${_DIR}/docker-list-volumes.py" ]; then
+    _LIST_CMD="python3 ${_DIR}/docker-list-volumes.py"
+fi
+if [ -x "/usr/bin/docker" ]; then
+    _LIST_CMD="/usr/bin/docker volume ls -f dangling=false -q"
+fi
+
+set -x
 WORKDIR="${WORKDIR:-/tmp}"
 S3_BUCKET="${S3_BUCKET:-}"
 S3_PREFIX="${S3_PREFIX:-/}"
@@ -18,7 +25,7 @@ _TIMESTAMP=`date +'%Y%m%d%H'`
 set +x
 
 discoverVolumes() {
-    DATA=`docker volume ls -f dangling=false -q`
+    DATA=`$_LIST_CMD`
     VOLUMES=""
 
     if [ "$_ARGS" == "" ]; then
