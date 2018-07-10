@@ -19,7 +19,7 @@ This will back up all used volumes to the **output-dir** directory.
 
 If you want to run the backup process on a specific schedule, you can specify at runtime. The container will keep running in the background, running the backups at the specified times:
 
-    docker run -- rm -d \
+    docker run --rm -d \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v <output-dir>:/data
         -e SCHEDULE="* */6 * * *"
@@ -31,7 +31,7 @@ The above will backup all volumes to the specified output directory every 6 hour
 
 You can specify the `VOLUMES` environment variable to select which volumes to backup:
 
-    docker run -- rm -d \
+    docker run --rm -d \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v <output-dir>:/data
         -e SCHEDULE="* */6 * * *"
@@ -44,7 +44,7 @@ The above will backup only `foo-data` and `bar-data` every 6 hours.
 
 You can have the script automatically upload the backups to an S3 bucket:
 
-    docker run -- rm \
+    docker run --rm \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v <output-dir>:/data                               # optional
         -e S3_BUCKET="my-s3-bucket"                         # required

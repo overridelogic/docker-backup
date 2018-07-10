@@ -4,6 +4,7 @@ COPY docker-backup.sh /usr/local/bin
 COPY docker-list-volumes.py /usr/local/bin
 COPY docker-run-backup.py /usr/local/bin
 COPY docker-entrypoint.sh /
+COPY LICENSE.md /
 RUN /bin/sh -c ' \
 mkdir -p /data ; \
 chmod +x /docker-entrypoint.sh ; \
