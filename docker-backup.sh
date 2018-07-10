@@ -4,14 +4,9 @@ set -e
 set -u
 _DIR=`dirname $0`
 _DIR=`realpath ${_DIR}`
+_LIST_CMD="python3 ${_DIR}/docker-list-volumes.py"
+_RUN_CMD="python3 ${_DIR}/docker-run-backup.py"
 _ARGS="${VOLUMES:-$*}"
-
-if [ -x "${_DIR}/docker-list-volumes.py" ]; then
-    _LIST_CMD="python3 ${_DIR}/docker-list-volumes.py"
-fi
-if [ -x "/usr/bin/docker" ]; then
-    _LIST_CMD="/usr/bin/docker volume ls -f dangling=false -q"
-fi
 
 set -x
 WORKDIR="${WORKDIR:-/tmp}"
@@ -49,8 +44,7 @@ createBackup() {
     OUTPUT_FULL="${WORKDIR}/${OUTPUT_FILE}"
     
     echo -n "Creating ${volume}... "
-    docker run --rm -v "${volume}:/data/${volume}" busybox /bin/sh -c \
-        "cd /data && tar -zcf - ${volume}" > "${OUTPUT_FULL}"
+    $_RUN_CMD "${volume}" > "${OUTPUT_FULL}"
 
     echo -n "created... "
 
