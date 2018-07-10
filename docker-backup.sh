@@ -12,11 +12,11 @@ set -x
 WORKDIR="${WORKDIR:-/data}"
 S3_BUCKET="${S3_BUCKET:-}"
 S3_PREFIX="${S3_PREFIX:-/}"
-S3_ENABLETAG="${S3_ENABLETAG:-1}"
-S3_OPTS="${S3_OPTS:-1}"
+S3_ENABLELATEST="${S3_ENABLELATEST:-1}"
+S3_OPTS="${S3_OPTS:-}"
 
 _HOST=`hostname -s`
-_TIMESTAMP=`date +'%Y%m%d%H'`
+_TIMESTAMP=`date +'%Y%m%d%H%M'`
 set +x
 
 discoverVolumes() {
@@ -50,9 +50,9 @@ createBackup() {
 
     if [ "${S3_BUCKET}" != "" ]; then
         echo -n "uploading... "
-        s3cmd put ${S3_OPTS} "${OUTPUT}" "s3://${S3_BUCKET}${S3_PREFIX}"
+        s3cmd put ${S3_OPTS} "${OUTPUT_FULL}" "s3://${S3_BUCKET}${S3_PREFIX}"
 
-        if [ $S3_ENABLE_TAG -gt 0 ]; then
+        if [ $S3_ENABLELATEST -gt 0 ]; then
             echo -n "updating tag... "
             s3cmd cp ${S3_OPTS} "s3://${S3_BUCKET}/${OUTPUT_FILE}" "s3://${S3_BUCKET}/${OUTPUT_BASE}-latest.tar.gz"
         fi
