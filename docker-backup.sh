@@ -23,7 +23,7 @@ discoverVolumes() {
     DATA=`$_LIST_CMD`
     VOLUMES=""
 
-    for volume in "$DATA"; do
+    for volume in $DATA; do
         if [ "$EXCLUDE" == "" ] || [[ ! "$volume" =~ ${EXCLUDE} ]]; then
             if [ "$_ARGS" == "" ] || [[ " ${_ARGS} " =~ " ${volume} " ]]; then
     	        VOLUMES="${VOLUMES} ${volume}"
