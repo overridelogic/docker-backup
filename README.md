@@ -58,8 +58,8 @@ The following environment variables are supported:
 
  - `S3_BUCKET`: the name of the bucket to save to.
  - `S3_PREFIX`: the prefix, i.e.: path, within the bucket to upload to.
- - `S3_ENABLELATEST`: if enabled (default), automatically creates or upadtes a file with the `-latest` suffix whenever a new backup file is created. There is only one `-latest` file per volume, it will get updated at every run. If disabled, the *"latest"* file will simply not be created or updated.
- - `S3_OPTS`: additional options to pass to *s3cmd*. Typically here, you need to pass either `--access-key` and `--secret-key` or an `--access-token` argument.
+ - `S3_ENABLELATEST`: if enabled (default), automatically creates or updates a file with the `-latest` suffix whenever a new backup file is created. There is only one `-latest` file per volume, it will get updated at every run. If disabled, the *"latest"* file will simply not be created or updated.
+ - `S3_OPTS`: additional options to pass to *s3cmd*. Typically here, you need to pass either `--access_key` and `--secret_key` or an `--access_token` argument.
 
 ### Other options
 
