@@ -12,6 +12,7 @@ set -x
 _TIMESTAMP=`date +'%Y%m%d%H%M'`
 WORKDIR="${WORKDIR:-/data}"
 PREFIX="${PREFIX:-volume_}"
+EXCLUDE="${EXCLUDE:-}"
 S3_BUCKET="${S3_BUCKET:-}"
 S3_PREFIX="${S3_PREFIX:-/}"
 S3_ENABLELATEST="${S3_ENABLELATEST:-1}"
@@ -22,15 +23,13 @@ discoverVolumes() {
     DATA=`$_LIST_CMD`
     VOLUMES=""
 
-    if [ "$_ARGS" == "" ]; then
-        VOLUMES="$DATA"
-    else
-        for volume in "$DATA"; do
-            if [[ " ${_ARGS} " =~ " ${volume} " ]]; then
-                VOLUMES="${VOLUMES} ${volume}"
+    for volume in "$DATA"; do
+        if [ "$EXCLUDE" == "" ] || [[ ! "$volume" =~ ${EXCLUDE} ]]; then
+            if [ "$_ARGS" == "" ] || [[ " ${_ARGS} " =~ " ${volume} " ]]; then
+    	        VOLUMES="${VOLUMES} ${volume}"
             fi
-        done
-    fi
+	fi
+    done
 
     echo -e $VOLUMES
 }
@@ -38,7 +37,7 @@ discoverVolumes() {
 createBackup() {
     volume="$1"
 
-    OUTPUT_BASE="${PREFIX}_${volume}"
+    OUTPUT_BASE="${PREFIX}${volume}"
     OUTPUT_FILE="${OUTPUT_BASE}-${_TIMESTAMP}.tar.gz"
     OUTPUT_FULL="${WORKDIR}/${OUTPUT_FILE}"
     

@@ -61,6 +61,13 @@ The following environment variables are supported:
  - `S3_ENABLELATEST`: if enabled (default), automatically creates or upadtes a file with the `-latest` suffix whenever a new backup file is created. There is only one `-latest` file per volume, it will get updated at every run. If disabled, the *"latest"* file will simply not be created or updated.
  - `S3_OPTS`: additional options to pass to *s3cmd*. Typically here, you need to pass either `--access-key` and `--secret-key` or an `--access-token` argument.
 
+### Other options
+
+Other environment variables that are supported:
+
+ - `WORKDIR`: by default, the backup script will work within `/data` for storing created files. You can change it using this variable (e.g.: to `/tmp` or other).
+ - `EXCLUDE`: you can supply a regular expression of volume names to ignore.
+
 ## Contributing
 
 Contributions are always welcome. Please fork on GitHub and submit a pull request.
