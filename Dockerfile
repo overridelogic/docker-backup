@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3-slim
 USER root
 COPY docker-backup.sh /usr/local/bin
 COPY docker-list-volumes.py /usr/local/bin
