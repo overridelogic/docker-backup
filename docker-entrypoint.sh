@@ -14,10 +14,12 @@ if [ "$SCHEDULE" == "" ]; then
 else
     echo "Schedule set to run: ${SCHEDULE}"
     echo "${SCHEDULE} /usr/local/bin/docker-backup.sh ${VOLUMES}" >> /etc/crontabs/root
+
+    if [ "$RUNSTART" -gt 0 ]; then
+        echo "Running on start."
+        /usr/local/bin/docker-backup.sh $VOLUMES
+    fi
+
     crond -f -l ${LOGLEVEL}
 fi
 
-if [ "$RUNSTART" -gt 0 ]; then
-    echo "Running on start."
-    /usr/local/bin/docker-backup.sh $VOLUMES
-fi

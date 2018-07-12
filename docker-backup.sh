@@ -66,7 +66,7 @@ VOLUMES="$(discoverVolumes)"
 COUNT=`echo "${VOLUMES}" | wc -w`
 echo "Found ${COUNT} volumes."
 
-if [ $PAUSE -gt 0 ]; then
+if [ $PAUSE -gt 0 ] && [ "$VOLUMES" != "" ]; then
     echo "Pausing containers."
     $_TOGGLE_CMD 0
 fi
@@ -75,7 +75,7 @@ for volume in ${VOLUMES}; do
     createBackup "${volume}"
 done
 
-if [ $PAUSE -gt 0 ]; then
+if [ $PAUSE -gt 0 ] && [ "$VOLUMES" != "" ]; then
     echo "Resuming containers."
     $_TOGGLE_CMD 1
 fi
