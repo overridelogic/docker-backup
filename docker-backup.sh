@@ -6,6 +6,7 @@ _DIR=`dirname $0`
 _DIR=`realpath ${_DIR}`
 _LIST_CMD="python3 ${_DIR}/docker-list-volumes.py"
 _RUN_CMD="python3 ${_DIR}/docker-run-backup.py"
+_TOGGLE_CMD="python3 ${_DIR}/docker-toggle-containers.py"
 _ARGS="${VOLUMES:-$*}"
 
 set -x
@@ -13,6 +14,7 @@ _TIMESTAMP=`date +'%Y%m%d%H%M'`
 WORKDIR="${WORKDIR:-/data}"
 PREFIX="${PREFIX:-volume_}"
 EXCLUDE="${EXCLUDE:-}"
+PAUSE="${PAUSE:-0}"
 S3_BUCKET="${S3_BUCKET:-}"
 S3_PREFIX="${S3_PREFIX:-/}"
 S3_ENABLELATEST="${S3_ENABLELATEST:-1}"
@@ -64,8 +66,18 @@ VOLUMES="$(discoverVolumes)"
 COUNT=`echo "${VOLUMES}" | wc -w`
 echo "Found ${COUNT} volumes."
 
+if [ $PAUSE -gt 0 ]; then
+    echo "Pausing containers."
+    $_TOGGLE_CMD 0
+fi
+
 for volume in ${VOLUMES}; do
     createBackup "${volume}"
 done
+
+if [ $PAUSE -gt 0 ]; then
+    echo "Resuming containers."
+    $_TOGGLE_CMD 1
+fi
 
 echo "Finished!"

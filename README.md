@@ -65,8 +65,10 @@ The following environment variables are supported:
 
 Other environment variables that are supported:
 
- - `WORKDIR`: by default, the backup script will work within `/data` for storing created files. You can change it using this variable (e.g.: to `/tmp` or other).
- - `EXCLUDE`: you can supply a regular expression of volume names to ignore.
+ - `EXCLUDE`: you can supply a regular expression of volume names to ignore. (default: none)
+ - `WORKDIR`: the backup script will work within this directory for storing created files. You can change it using this variable. (default: `/data`)
+ - `PAUSE`: when `1`, all containers will be paused during the backup process, and resumed once it finishes (default: `0`).
+ - `RUNSTART`: when `1` and `SCHEDULE` is defined, the backup process will run once on start, to run on the normal schedule afterwards.
 
 ## Contributing
 
