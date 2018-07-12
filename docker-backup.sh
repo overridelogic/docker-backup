@@ -48,18 +48,28 @@ createBackup() {
 
     echo -n "created... "
 
+    SIZE=`du -h ${OUTPUT_FULL} | cut -f1`
+    echo "done: ${SIZE}, ${OUTPUT_FILE}"
+}
+
+uploadBackup() {
+    volume="$1"
+
+    OUTPUT_BASE="${PREFIX}${volume}"
+    OUTPUT_FILE="${OUTPUT_BASE}-${_TIMESTAMP}.tar.gz"
+    OUTPUT_FULL="${WORKDIR}/${OUTPUT_FILE}"
+
     if [ "${S3_BUCKET}" != "" ]; then
-        echo -n "uploading... "
+        echo -n "Uploading to S3... "
         s3cmd put ${S3_OPTS} "${OUTPUT_FULL}" "s3://${S3_BUCKET}${S3_PREFIX}"
 
         if [ $S3_ENABLELATEST -gt 0 ]; then
             echo -n "updating tag... "
             s3cmd cp ${S3_OPTS} "s3://${S3_BUCKET}/${OUTPUT_FILE}" "s3://${S3_BUCKET}/${OUTPUT_BASE}-latest.tar.gz"
         fi
-    fi
 
-    SIZE=`du -h ${OUTPUT_FULL} | cut -f1`
-    echo "done: ${SIZE}, ${OUTPUT_FILE}"
+        echo "done."
+    fi
 }
 
 VOLUMES="$(discoverVolumes)"
@@ -79,5 +89,9 @@ if [ $PAUSE -gt 0 ] && [ "$VOLUMES" != "" ]; then
     echo "Resuming containers."
     $_TOGGLE_CMD 1
 fi
+
+for volume in ${VOLUMES}; do
+    uploadBackup "${volume}"
+done
 
 echo "Finished!"
