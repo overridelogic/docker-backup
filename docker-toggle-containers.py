@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+import os
 import sys
 import docker
 
@@ -12,6 +13,9 @@ client = docker.from_env()
 containers = client.containers.list()
 
 for container in containers:
+    if container.id == os.getenv('HOSTNAME') or container.name == os.getenv('HOSTNAME'):
+        continue
+
     if flag:
         try:
             container.unpause()
