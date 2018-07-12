@@ -13,8 +13,11 @@ client = docker.from_env()
 containers = client.containers.list()
 
 for container in containers:
-    if container.id == os.getenv('HOSTNAME') or container.name == os.getenv('HOSTNAME'):
+    try:
+        container.get_archive('/usr/local/bin/docker-backup.sh')
         continue
+    except:
+        pass
 
     if flag:
         try:
